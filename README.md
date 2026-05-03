@@ -1,35 +1,78 @@
 # LBU Academy Student Portal
 
-Microservices-based web application for Leeds Beckett University.
+Microservices-based Student Portal for Leeds Beckett University
+MSc Software Engineering for Service Computing 2025/2026
 
-## Project Structure
-| Microservice | Technology | Contributor |
+## Microservices
+| Service | Technology | Port |
 |---|---|---|
-| Student Portal (this repo) | Spring Boot, MySQL | Shehryar |
-| Finance Microservice | Spring Boot, MariaDB | Teammate 2 |
-| Library Microservice | Python Flask, MySQL | Teammate 3 |
+| Student Portal | Spring Boot + MySQL | 8080 |
+| Finance Service | Spring Boot + MariaDB (Docker) | 8081 |
+| Library Service | Python Flask + MySQL | 8082 |
 
-## Student Portal Features
-- Register / Login (JWT Auth)
+## Features
+- Register / Login (JWT Authentication)
 - View Courses
-- Enrol in Course
+- Enrol in Course (creates Finance invoice + Library account)
 - View Enrolments
 - View / Update Profile
-- Graduation Eligibility Check
+- Graduation Eligibility (checks Finance balance)
 
 ## Tech Stack
 - Java 21, Spring Boot 3.5.13
 - Spring Security + JWT (jjwt 0.12.6)
 - Spring Data JPA + MySQL
-- Frontend: HTML, CSS, JavaScript
+- Python Flask + waitress
+- Docker + MariaDB
+- Frontend: HTML5, CSS3, JavaScript
 
-## Run Instructions
-1. Create MySQL database: `academy_portal`
-2. Update `application.properties` with your MySQL password
-3. Run `StudentPortalApplication`
-4. Open `frontend-app/index.html` with Live Server
+---
 
-## Ports
-- Student Portal: 8080
-- Finance Service: 8081
-- Library Service: 8082
+## API Endpoints
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | /api/auth/register | No | Register new student |
+| POST | /api/auth/login | No | Login and receive JWT token |
+| GET | /api/courses | Yes | View all courses |
+| POST | /api/enrolments | Yes | Enrol in a course |
+| GET | /api/enrolments | Yes | View my enrolments |
+| GET | /api/profile | Yes | View student profile |
+| PUT | /api/profile | Yes | Update name |
+| GET | /api/graduation | Yes | Check graduation eligibility |
+
+---
+
+## Database Tables
+
+Automatically created by Hibernate on first run:
+
+| Table | Description |
+|---|---|
+| portal_users | Login credentials |
+| student_profiles | Student ID and names |
+| courses | Available courses |
+| enrolments | Course enrolment records |
+
+---
+
+## Unit Tests
+
+8 unit tests written using JUnit 5 and Mockito.
+No database required — all dependencies are mocked.
+
+**PortalUserServiceTest (6 tests)**
+- registerNewAccount_Success
+- registerAccount_DuplicateUsername_ThrowsException
+- registerAccount_DuplicateEmail_ThrowsException
+- registerAccount_PasswordIsEncoded
+- registerAccount_TokenGenerated
+- registerAccount_SaveCalledOnce
+
+**CourseServiceTest (2 tests)**
+- getAllCourses_ReturnsAllCourses
+- getAllCourses_EmptyList_ReturnsEmpty
+
+**Result: 8/8 tests passing**
+
+---
